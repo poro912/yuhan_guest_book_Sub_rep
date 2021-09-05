@@ -124,29 +124,36 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 #include<vector>
 #include<ctime>
 #include<string>
-#define BTNS 10         // 색상 버튼 갯수
-#define S_BTN_x 700     // 색상 버튼 시작 x위치
-#define S_BTN_y 37      // 색상 버튼 시작 y위치
+#define BTNS 17        // 색상 버튼 갯수
+#define S_BTN_x 650     // 색상 버튼 시작 x위치
+#define S_BTN_y 30      // 색상 버튼 시작 y위치
 #define BTN_gap 3       // 버튼 간격
 #define BTN_size 30     // 버튼 크기
 
 #define REPLAY 1500     // REPLAY 버튼 번호
 #define CLEAR 1501      // CLEAR 버튼 번호
 #define COMM_BTN_x 30       //command button
-#define COMM_BTN_y 40       //
+#define COMM_BTN_y 33       //
 #define COMM_BTN_width 100  //
 #define COMM_BTN_hight 30   //
 #define COMM_BTN_gap 10     //
 
 #define PLUS 2000       // PLUS 버튼 번호
-#define MINUS 2001      // MINUS 버튼 번소
+#define MINUS 2001      // MINUS 버튼 번호
 #define SIZE_BTN_x 290  //command button
-#define SIZE_BTN_y 40   // 
+#define SIZE_BTN_y 33   // 
 #define SIZE_BTN_size 30    //
 #define SIZE_BTN_gap 30     //
 #define SIZE_BTN_top_width -10
 #define SIZE_BTN_width 150  //
 #define SIZE_BTN_hight 35   //
+
+#define ERASER 2500     // REPLAY 버튼 번호
+#define ERASER_BTN_x 580       //command button
+#define ERASER_BTN_y 30       //
+#define ERASER_BTN_width 80   //
+#define ERASER_BTN_hight 30   //
+#define ERASER_BTN_gap 10     //
 
 #define BOUNDARY 100    // 마우스 인식 지점 
 
@@ -173,17 +180,24 @@ typedef struct point_info
     UINT state;     //상태{WM_LBUTTONDOWN, }
 }PINFO;
 
-// 색상을 저장하는 배열
-COLORREF cols[] = { RGB(255,255,255),
-                    RGB(0,0,0),
-                    RGB(192,192,192),
-                    RGB(255,0,0),
-                    RGB(255,127,39),
-                    RGB(255,242,0),
-                    RGB(34,177,76),
-                    RGB(0,162,232),
-                    RGB(63,72,204),
-                    RGB(163,73,164) 
+// 색상을 저장하는 배열      // ↓배열의 0번에 해당하는 부분이 프로그램에서 표시되지 않음(새로운 이슈)
+COLORREF cols[] = { RGB(255,0 ,255), //표시되지 않는 색(검정색 앞부분을 클릭하면 색이 변경되는거로 보아 프로그램상으로 구현은 되어있습니다)
+                    RGB(0,0,0),         //검정
+                    RGB(255,255,255),   //흰색
+                    RGB(192,192,192),   //회색
+                    RGB(255,0,0),       //빨간색
+                    RGB(255,155,0),     //주황색
+                    RGB(255,255,0),     //노란색
+                    RGB(155,255,0),     //연두색
+                    RGB(0,255,0),       //초록색
+                    RGB(0,255,255),     //하늘색
+                    RGB(0,0,255),       //파란색
+                    RGB(155,0,255),     //자주색
+                    RGB(255,0,255),     //보라색
+                    RGB(255,0,155),     //연분홍
+                    RGB(255,0,105),     //분홍색
+                    RGB(150,75,0),      //갈색
+                    RGB(128,0,0),       //적갈색
 };
 
 // --------전역 변수 선언부---------
@@ -192,6 +206,7 @@ HWND g_button_replay = nullptr; // 버튼에 대한 포인터를 저장
 HWND g_button_clear = nullptr;
 HWND g_button_plus = nullptr;
 HWND g_button_minus = nullptr;
+HWND g_button_eraser = nullptr;
 
 std::vector <PINFO> g_Pinfo;    // 선 정보 저장 벡터
 bool is_replay = false;         // 현재 리플레이 상태인지 확인
@@ -217,6 +232,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     PINFO temp_pinfo;
     POINT po;
     DWORD g_time;
+    LPMINMAXINFO MaxMin_Info; //윈도우 크기 함수
     int x, y;
 
 
@@ -254,7 +270,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         g_button_plus = CreateWindow(L"button", L"╋", WS_CHILD | WS_VISIBLE, \
             SIZE_BTN_x + SIZE_BTN_size + SIZE_BTN_gap, SIZE_BTN_y, SIZE_BTN_size, SIZE_BTN_size, \
             hWnd, (HMENU)PLUS, hInst, NULL);
+
+        // 지우개 버튼 생성
+        g_button_eraser = CreateWindow(L"button", L"지우개", WS_CHILD | WS_VISIBLE, \
+            ERASER_BTN_x, ERASER_BTN_y, ERASER_BTN_width, ERASER_BTN_hight, \
+            hWnd, (HMENU)ERASER, hInst, NULL);
         break;
+
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
@@ -295,6 +317,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             else
                 p_width = 1;
             InvalidateRect(hWnd, NULL, TRUE);
+            break;      
+        case ERASER:    //지우개 버튼 클릭시(구현을 못햇습니다..)
+            
             break;
         case IDM_ABOUT:
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
@@ -436,7 +461,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         left = false;
         break;
 
-    
+    case WM_GETMINMAXINFO:      //창 크기 고정(16:9 = 1280 X 720)
+        MaxMin_Info = (LPMINMAXINFO)lParam;
+        MaxMin_Info->ptMinTrackSize.x = 1280;
+        MaxMin_Info->ptMinTrackSize.y = 720;
+        MaxMin_Info->ptMaxTrackSize.x = 1280;
+        MaxMin_Info->ptMaxTrackSize.y = 720;
+
+        return 0;
+
     case WM_PAINT:
     {
         PAINTSTRUCT ps;
@@ -536,6 +569,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
+
     return 0;
 }
 
