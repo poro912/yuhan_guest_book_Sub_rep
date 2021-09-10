@@ -260,7 +260,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             COMM_BTN_x, COMM_BTN_y, COMM_BTN_width, COMM_BTN_hight, \
             hWnd, (HMENU)REPLAY, hInst, NULL);
         g_button_clear = CreateWindow(L"button", L"CLEAR", WS_CHILD | WS_VISIBLE, \
-            COMM_BTN_x + COMM_BTN_width + COMM_BTN_gap, COMM_BTN_y, COMM_BTN_width, COMM_BTN_hight, \
+            COMM_BTN_x + COMM_BTN_width + COMM_BTN_gap+20, COMM_BTN_y, COMM_BTN_width, COMM_BTN_hight, \
             hWnd, (HMENU)CLEAR, hInst, NULL);
 
         // + - 버튼 생성
@@ -318,8 +318,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 p_width = 1;
             InvalidateRect(hWnd, NULL, TRUE);
             break;      
-        case ERASER:    //지우개 버튼 클릭시(구현을 못햇습니다..)
-            
+        case ERASER:    //지우개 버튼 클릭시
+            col = 2;
+
             break;
         case IDM_ABOUT:
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
