@@ -1,6 +1,7 @@
 # 무시디렉터리
 .vs/
 Debug/
+for_submit/Debug/
 
 # Prerequisites
 *.d
