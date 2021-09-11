@@ -1,6 +1,10 @@
 # 무시디렉터리
 .vs/
 Debug/
+<<<<<<< HEAD
+=======
+for_submit/Debug/
+>>>>>>> lcy
 
 # Prerequisites
 *.d
