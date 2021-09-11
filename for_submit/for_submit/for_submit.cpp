@@ -180,7 +180,7 @@ typedef struct point_info
     UINT state;     //상태{WM_LBUTTONDOWN, }
 }PINFO;
 
-// 색상을 저장하는 배열      // ↓배열의 0번에 해당하는 부분이 프로그램에서 표시되지 않음(새로운 이슈)
+// 색상을 저장하는 배열      // ↓배열의 0번에 해당하는 부분이 프로그램에서 표시되지 않음
 COLORREF cols[] = { RGB(255,0 ,255), //표시되지 않는 색(검정색 앞부분을 클릭하면 색이 변경되는거로 보아 프로그램상으로 구현은 되어있습니다)
                     RGB(0,0,0),         //검정
                     RGB(255,255,255),   //흰색
@@ -232,7 +232,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     PINFO temp_pinfo;
     POINT po;
     DWORD g_time;
-    LPMINMAXINFO MaxMin_Info; //윈도우 크기 함수
+    LPMINMAXINFO MaxMin_Info; //윈도우 크기 구조체
     int x, y;
 
 
@@ -320,7 +320,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
         case ERASER:    //지우개 버튼 클릭시
             col = 2;
-
             break;
         case IDM_ABOUT:
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);

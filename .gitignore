@@ -1,3 +1,7 @@
+# 무시디렉터리
+.vs/
+Debug/
+
 # Prerequisites
 *.d
 
