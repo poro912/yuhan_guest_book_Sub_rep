@@ -1,5 +1,5 @@
 ﻿// for_submit.cpp : 애플리케이션에 대한 진입점을 정의합니다.
-//테스트
+//test
 
 #include "framework.h"
 #include "for_submit.h"
