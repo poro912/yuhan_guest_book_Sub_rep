@@ -1,8 +1,8 @@
 ﻿// for_submit.cpp : 애플리케이션에 대한 진입점을 정의합니다.
-//wlsWk
 
 #include "framework.h"
 #include "for_submit.h"
+#include "./GB_moudles/GB_moudles.h"
 
 #define MAX_LOADSTRING 100
 
@@ -121,9 +121,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
 //
 //
-#include<vector>
-#include<ctime>
-#include<string>
 #define BTNS 17        // 색상 버튼 갯수
 #define S_BTN_x 650     // 색상 버튼 시작 x위치
 #define S_BTN_y 30      // 색상 버튼 시작 y위치
@@ -171,6 +168,7 @@ typedef struct btn      //색상 버튼내용을 저장할 구조체
     //HWND Wnd;
 }BTN;
 
+/*
 typedef struct point_info
 {
     LPARAM lparm;   //좌표  
@@ -179,6 +177,7 @@ typedef struct point_info
     DWORD ctime;   //시간
     UINT state;     //상태{WM_LBUTTONDOWN, }
 }PINFO;
+*/
 
 // 색상을 저장하는 배열      // ↓배열의 0번에 해당하는 부분이 프로그램에서 표시되지 않음
 COLORREF cols[] = { RGB(255,0 ,255), //표시되지 않는 색(검정색 앞부분을 클릭하면 색이 변경되는거로 보아 프로그램상으로 구현은 되어있습니다)
@@ -513,36 +512,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
 
         if (!is_replay)     // 현재 리플레이 되고 있는 상황이 아니라면
-        {
-            // 사용자가 입력한 그림을 다시 그림
-            for (int i = 0; i < g_Pinfo.size(); i++)
-            {
-                switch (g_Pinfo[i].state)
-                {
-                case WM_LBUTTONDOWN:
-                    //MessageBox(hWnd, L"실행", L"L버튼", MB_OK);
-                    DeleteObject(npen);
-                    npen = CreatePen(PS_SOLID, g_Pinfo[i].cWidth, g_Pinfo[i].color);
-                    SelectObject(hdc, npen);
-
-                    x = LOWORD(g_Pinfo[i].lparm);
-                    y = HIWORD(g_Pinfo[i].lparm);
-
-                    MoveToEx(hdc, x, y, NULL);
-                    LineTo(hdc, x + 1, y + 1);  //점찍기
-                    break;
-
-                case WM_MOUSEMOVE:
-                case WM_LBUTTONUP:
-
-                    LineTo(hdc, LOWORD(g_Pinfo[i].lparm), HIWORD(g_Pinfo[i].lparm));
-                    break;
-
-                default:
-                    break;
-                }
-            }
-        }
+            draw_vector(hWnd, hdc, g_Pinfo);    // 사용자가 입력한 그림을 다시 그림
+            
 
         EndPaint(hWnd, &ps);
     }

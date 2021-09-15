@@ -141,11 +141,18 @@
   <ItemGroup>
     <ClInclude Include="for_submit.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="GB_moudles\GB_moudles.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="for_submit.cpp" />
+    <ClCompile Include="GB_moudles\GB_Buttons.cpp" />
+    <ClCompile Include="GB_moudles\GB_file_io.cpp" />
+    <ClCompile Include="GB_moudles\GB_Graphics.cpp" />
+    <ClCompile Include="GB_moudles\GB_Keyboard.cpp" />
+    <ClCompile Include="GB_moudles\GB_mouse.cpp" />
+    <ClCompile Include="GB_moudles\GB_parete.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="for_submit.rc" />

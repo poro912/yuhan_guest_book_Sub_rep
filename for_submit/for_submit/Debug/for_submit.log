@@ -1,30 +1,21 @@
 ﻿  for_submit.cpp
-<<<<<<< HEAD
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(230,27): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(350,27): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(371,42): warning C4244: '=': 'ULONGLONG'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(394,39): warning C4244: '=': 'ULONGLONG'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(401,46): warning C4244: '=': 'ULONGLONG'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(432,50): warning C4244: '=': 'ULONGLONG'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(475,27): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(485,31): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(219,11): warning C4101: 'g_time' :참조되지 않은 지역 변수입니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(445,24): warning C4101: 'obrush' :참조되지 않은 지역 변수입니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(445,16): warning C4101: 'nbrush' :참조되지 않은 지역 변수입니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(577,27): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-=======
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(246,27): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(375,27): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(396,42): warning C4244: '=': 'ULONGLONG'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(419,39): warning C4244: '=': 'ULONGLONG'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(426,46): warning C4244: '=': 'ULONGLONG'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(457,50): warning C4244: '=': 'ULONGLONG'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(508,27): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(518,31): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(234,11): warning C4101: 'g_time' :참조되지 않은 지역 변수입니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(478,24): warning C4101: 'obrush' :참조되지 않은 지역 변수입니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(478,16): warning C4101: 'nbrush' :참조되지 않은 지역 변수입니다.
-E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(611,27): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
->>>>>>> lcy
-  LINK : E:\레퍼런스\yuhan_guest_book\for_submit\Debug\for_submit.exe을(를) 찾을 수 없거나 마지막 증분 링크에 의해 빌드되지 않았습니다. 전체 링크를 수행하고 있습니다.
+E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(245,27): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(374,27): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(395,42): warning C4244: '=': 'ULONGLONG'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(418,39): warning C4244: '=': 'ULONGLONG'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(425,46): warning C4244: '=': 'ULONGLONG'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(456,50): warning C4244: '=': 'ULONGLONG'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(507,27): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(233,11): warning C4101: 'g_time' :참조되지 않은 지역 변수입니다.
+E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(477,24): warning C4101: 'obrush' :참조되지 않은 지역 변수입니다.
+E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(477,16): warning C4101: 'nbrush' :참조되지 않은 지역 변수입니다.
+E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\for_submit.cpp(582,27): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  GB_Buttons.cpp
+  GB_file_io.cpp
+  GB_Graphics.cpp
+E:\레퍼런스\yuhan_guest_book\for_submit\for_submit\GB_moudles\GB_Graphics.cpp(12,23): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  GB_Keyboard.cpp
+  GB_mouse.cpp
+  GB_parete.cpp
+  코드를 생성하고 있습니다...
   for_submit.vcxproj -> E:\레퍼런스\yuhan_guest_book\for_submit\Debug\for_submit.exe
