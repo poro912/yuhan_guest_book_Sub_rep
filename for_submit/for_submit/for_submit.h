@@ -6,7 +6,6 @@
 #include<string>
 #include "resource.h"
 #include "framework.h"
-#include "./GB_moudles/GB_moudles.h"
 
 
 typedef struct point_info

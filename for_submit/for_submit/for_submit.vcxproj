@@ -152,7 +152,7 @@
     <ClCompile Include="GB_moudles\GB_Graphics.cpp" />
     <ClCompile Include="GB_moudles\GB_Keyboard.cpp" />
     <ClCompile Include="GB_moudles\GB_Mouse.cpp" />
-    <ClCompile Include="GB_moudles\GB_Parete.cpp" />
+    <ClCompile Include="GB_moudles\GB_Palette.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="for_submit.rc" />

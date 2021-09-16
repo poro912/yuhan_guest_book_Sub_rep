@@ -38,9 +38,6 @@
     <ClCompile Include="for_submit.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="GB_moudles\GB_Parete.cpp">
-      <Filter>소스 파일\moudle</Filter>
-    </ClCompile>
     <ClCompile Include="GB_moudles\GB_Mouse.cpp">
       <Filter>소스 파일\moudle</Filter>
     </ClCompile>
@@ -54,6 +51,9 @@
       <Filter>소스 파일\moudle</Filter>
     </ClCompile>
     <ClCompile Include="GB_moudles\GB_Button.cpp">
+      <Filter>소스 파일\moudle</Filter>
+    </ClCompile>
+    <ClCompile Include="GB_moudles\GB_Palette.cpp">
       <Filter>소스 파일\moudle</Filter>
     </ClCompile>
   </ItemGroup>

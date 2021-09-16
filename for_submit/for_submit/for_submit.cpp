@@ -1,5 +1,5 @@
 ﻿// for_submit.cpp : 애플리케이션에 대한 진입점을 정의합니다.
-
+// Guest_Book main cpp 파일
 #include "framework.h"
 #include "for_submit.h"
 #include "./GB_moudles/GB_moudles.h"

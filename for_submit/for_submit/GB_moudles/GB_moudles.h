@@ -1,6 +1,5 @@
 #pragma once
 // 모듈에 대한 정의를 하는 헤더파일
-#include "../framework.h"
 #include "../for_submit.h"
 #include<vector>
 
