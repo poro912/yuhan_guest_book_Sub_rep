@@ -16,6 +16,9 @@
     <Filter Include="소스 파일\moudle">
       <UniqueIdentifier>{50e0fe1b-e0bf-46c9-a40c-64193e66597e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\moudle">
+      <UniqueIdentifier>{bf458ea2-2a1f-41c1-88af-093ab36ab59f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -32,6 +35,9 @@
     </ClInclude>
     <ClInclude Include="GB_moudles\GB_moudles.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GB_moudles\GB_Palette.h">
+      <Filter>헤더 파일\moudle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

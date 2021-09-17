@@ -142,6 +142,7 @@
     <ClInclude Include="for_submit.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GB_moudles\GB_moudles.h" />
+    <ClInclude Include="GB_moudles\GB_Palette.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
