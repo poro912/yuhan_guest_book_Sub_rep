@@ -1,9 +1,21 @@
 # 무시디렉터리
 .vs/*
+.vs/
 Debug/*
+Debug/
 for_submit/Debug/*
+for_submit/Debug/
 *.log
 
+#확장자
+*.suo
+*.db
+*.ipch
+*.lik
+*.pdb
+*.log
+*.tlog
+*.idb
 
 # Prerequisites
 *.d
