@@ -5,7 +5,6 @@
 #include<ctime>
 #include<string>
 #include <stdlib.h>
-#include <time.h>
 #include "resource.h"
 #include "framework.h"
 
@@ -18,17 +17,6 @@ typedef struct point_info
     DWORD           ctime;      //시간
     UINT            state;      //상태{WM_LBUTTONDOWN }
 }PINFO;
-
-
-srand(time(NULL)); //문제점 : srand에서 오류가 난다
-
-    //현재 코드를 실행하면 창을 실행할 때마다 랜덤값이 바뀌어서 나오지 않음
-    //rand()함수만 사용했을 때의 전형적인 문제점.
-
-static int rr = rand() % 255; //클래스 내에 변수를 선언하니 오류가 발생, static으로 선언하니 오류는 
-static int gg = rand() % 255; //해결됐습니다.
-static int bb = rand() % 255; 
-
 
 
 
@@ -49,7 +37,7 @@ static COLORREF cols[] = { RGB(255,0 ,255), //표시되지 않는 색(검정색 
                     RGB(255,0,105),     //분홍색
                     RGB(150,75,0),      //갈색
                     RGB(128,0,0),       //적갈색
-                    RGB(rr,gg,bb)       //랜덤색
+                    RGB(0,0,0)       //랜덤색
 };
 
 // 색상을 저장하는 배열      // ↓배열의 0번에 해당하는 부분이 프로그램에서 표시되지 않음

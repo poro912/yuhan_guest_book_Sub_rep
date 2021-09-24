@@ -21,7 +21,9 @@ typedef struct btn      //색상 버튼내용을 저장할 구조체
 
 class Palette
 {
+
 public:
+    COLORREF ran;
     int x;
     int y;
     int boundary_x;
@@ -31,4 +33,6 @@ public:
     Palette(int x, int y);
     void print(HDC hdc);
     int is_press(LPARAM lParam);
+
+    void ChangeRand();
 };

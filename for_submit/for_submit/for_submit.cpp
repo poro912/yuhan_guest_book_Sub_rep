@@ -233,7 +233,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             hWnd, (HMENU)PLUS, hInst, NULL);
 
         // 지우개 버튼 생성
-        g_button_eraser = CreateWindow(L"button", L"지우개", WS_CHILD | WS_VISIBLE, \
+        g_button_eraser = CreateWindow(L"button", L"랜덤", WS_CHILD | WS_VISIBLE, \
             ERASER_BTN_x, ERASER_BTN_y, ERASER_BTN_width, ERASER_BTN_hight, \
             hWnd, (HMENU)ERASER, hInst, NULL);
         break;
@@ -280,7 +280,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             InvalidateRect(hWnd, NULL, TRUE);
             break;
         case ERASER:    //지우개 버튼 클릭시
-            col = 2;
+            mypal->ChangeRand();
+
+
             break;
         case IDM_ABOUT:
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
