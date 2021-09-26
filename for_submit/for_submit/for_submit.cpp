@@ -1,8 +1,8 @@
 ﻿// for_submit.cpp : 애플리케이션에 대한 진입점을 정의합니다.
-//
-
+// Guest_Book main cpp 파일
 #include "framework.h"
 #include "for_submit.h"
+#include "./GB_moudles/GB_moudles.h"
 
 #define MAX_LOADSTRING 100
 
@@ -121,39 +121,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
 //
 //
-#include<vector>
-#include<ctime>
-#include<string>
-#define BTNS 17        // 색상 버튼 갯수
-#define S_BTN_x 650     // 색상 버튼 시작 x위치
-#define S_BTN_y 30      // 색상 버튼 시작 y위치
-#define BTN_gap 3       // 버튼 간격
-#define BTN_size 30     // 버튼 크기
-
-#define REPLAY 1500     // REPLAY 버튼 번호
-#define CLEAR 1501      // CLEAR 버튼 번호
-#define COMM_BTN_x 30       //command button
-#define COMM_BTN_y 33       //
-#define COMM_BTN_width 100  //
-#define COMM_BTN_hight 30   //
-#define COMM_BTN_gap 10     //
-
-#define PLUS 2000       // PLUS 버튼 번호
-#define MINUS 2001      // MINUS 버튼 번호
-#define SIZE_BTN_x 290  //command button
-#define SIZE_BTN_y 33   // 
-#define SIZE_BTN_size 30    //
-#define SIZE_BTN_gap 30     //
-#define SIZE_BTN_top_width -10
-#define SIZE_BTN_width 150  //
-#define SIZE_BTN_hight 35   //
-
-#define ERASER 2500     // REPLAY 버튼 번호
-#define ERASER_BTN_x 580       //command button
-#define ERASER_BTN_y 30       //
-#define ERASER_BTN_width 80   //
-#define ERASER_BTN_hight 30   //
-#define ERASER_BTN_gap 10     //
 
 #define BOUNDARY 100    // 마우스 인식 지점 
 
@@ -162,15 +129,8 @@ DWORD WINAPI drawing(LPVOID points);    // 리플레이 스레드
 bool is_area(LPARAM lParam);            // 색칠 가능 영역인지 반환해주는 함수
 
 // -----구조체, 클래스 선언부------
-typedef struct btn      //색상 버튼내용을 저장할 구조체
-{
-    RECT rect;
-    COLORREF col;
-    HBRUSH brsh;
-    HPEN pen;
-    //HWND Wnd;
-}BTN;
 
+/*
 typedef struct point_info
 {
     LPARAM lparm;   //좌표  
@@ -179,34 +139,13 @@ typedef struct point_info
     DWORD ctime;   //시간
     UINT state;     //상태{WM_LBUTTONDOWN, }
 }PINFO;
+*/
 
-// 색상을 저장하는 배열      // ↓배열의 0번에 해당하는 부분이 프로그램에서 표시되지 않음
-COLORREF cols[] = { RGB(255,0 ,255), //표시되지 않는 색(검정색 앞부분을 클릭하면 색이 변경되는거로 보아 프로그램상으로 구현은 되어있습니다)
-                    RGB(0,0,0),         //검정
-                    RGB(255,255,255),   //흰색
-                    RGB(192,192,192),   //회색
-                    RGB(255,0,0),       //빨간색
-                    RGB(255,155,0),     //주황색
-                    RGB(255,255,0),     //노란색
-                    RGB(155,255,0),     //연두색
-                    RGB(0,255,0),       //초록색
-                    RGB(0,255,255),     //하늘색
-                    RGB(0,0,255),       //파란색
-                    RGB(155,0,255),     //자주색
-                    RGB(255,0,255),     //보라색
-                    RGB(255,0,155),     //연분홍
-                    RGB(255,0,105),     //분홍색
-                    RGB(150,75,0),      //갈색
-                    RGB(128,0,0),       //적갈색
-};
+
+
 
 // --------전역 변수 선언부---------
 HWND g_hWnd;
-HWND g_button_replay = nullptr; // 버튼에 대한 포인터를 저장
-HWND g_button_clear = nullptr;
-HWND g_button_plus = nullptr;
-HWND g_button_minus = nullptr;
-HWND g_button_eraser = nullptr;
 
 std::vector <PINFO> g_Pinfo;    // 선 정보 저장 벡터
 bool is_replay = false;         // 현재 리플레이 상태인지 확인
@@ -227,54 +166,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     static bool left = false;   // 왼쪽 버튼 클릭 확인
     static DWORD drow_time;     // 최근 그려진 시간이 언제인가
     static HANDLE thread = nullptr; // 쓰레드 저장
-
+    static Palette* mypal;
+    //static void g_button_replay;
     HDC hdc;
     PINFO temp_pinfo;
     POINT po;
     DWORD g_time;
     LPMINMAXINFO MaxMin_Info; //윈도우 크기 구조체
     int x, y;
-
+    Button Btn;
 
     switch (message)
     {
-
     case WM_CREATE:
         g_hWnd = hWnd;
-        x = S_BTN_x;    // 색상 버튼 생성
-        y = S_BTN_y;
-        for (int i = 0; i < btns.size(); i++)
-        {
-            btns[i].rect.left = x;
-            btns[i].rect.top = y;
-            btns[i].rect.right = x + BTN_size;
-            btns[i].rect.bottom = y + BTN_size;
+        // 팔레트 생성
+        mypal = new Palette(680, 30);
 
-            x += BTN_size + BTN_gap;
+        // 버튼 생성
 
-            btns[i].brsh = CreateSolidBrush(cols[i]);
-        }
+        Btn.ReplayButton(hWnd,hInst);
+        Btn.ClearButton(hWnd, hInst);
+        Btn.PlusButton(hWnd, hInst);
+        Btn.MinusButton(hWnd, hInst);
+        Btn.EarserButton(hWnd, hInst);
 
-        // CLEAR REPLAY 버튼 생성
-        g_button_replay = CreateWindow(L"button", L"REPLAY", WS_CHILD | WS_VISIBLE, \
-            COMM_BTN_x, COMM_BTN_y, COMM_BTN_width, COMM_BTN_hight, \
-            hWnd, (HMENU)REPLAY, hInst, NULL);
-        g_button_clear = CreateWindow(L"button", L"CLEAR", WS_CHILD | WS_VISIBLE, \
-            COMM_BTN_x + COMM_BTN_width + COMM_BTN_gap + 20, COMM_BTN_y, COMM_BTN_width, COMM_BTN_hight, \
-            hWnd, (HMENU)CLEAR, hInst, NULL);
-
-        // + - 버튼 생성
-        g_button_minus = CreateWindow(L"button", L"━", WS_CHILD | WS_VISIBLE, \
-            SIZE_BTN_x, SIZE_BTN_y, SIZE_BTN_size, SIZE_BTN_size, \
-            hWnd, (HMENU)MINUS, hInst, NULL);
-        g_button_plus = CreateWindow(L"button", L"╋", WS_CHILD | WS_VISIBLE, \
-            SIZE_BTN_x + SIZE_BTN_size + SIZE_BTN_gap, SIZE_BTN_y, SIZE_BTN_size, SIZE_BTN_size, \
-            hWnd, (HMENU)PLUS, hInst, NULL);
-
-        // 지우개 버튼 생성
-        g_button_eraser = CreateWindow(L"button", L"지우개", WS_CHILD | WS_VISIBLE, \
-            ERASER_BTN_x, ERASER_BTN_y, ERASER_BTN_width, ERASER_BTN_hight, \
-            hWnd, (HMENU)ERASER, hInst, NULL);
         break;
 
     case WM_COMMAND:
@@ -363,7 +279,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_LBUTTONDOWN:
-
+        int ret;
         x = LOWORD(lParam);
         y = HIWORD(lParam);
 
@@ -372,18 +288,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
         // 색 변경 버튼을 눌렀는지 확인
-        for (int i = 0; i < btns.size(); i++)
+        ret = mypal->is_press(lParam);
+        // 버튼이 눌렸다면 색상 변경
+        if (ret != -1)
         {
-            if (PtInRect(&btns[i].rect, po))
-            {
-                //MessageBox(hWnd, L"색이 선택됐습니다.", L"상단 글자", MB_OK);
-                col = i;
-                InvalidateRect(hWnd, NULL, true);
-                return 0;
-            }
+            InvalidateRect(hWnd, &pen_rect, TRUE);
+            col = ret;
         }
+            
 
-        if (!is_area(lParam))   // 바운더리 영역 밖이면 종료
+        // 바운더리 영역 밖이면 종료
+        if (!is_area(lParam))   
             return 0;
 
         left = true;
@@ -469,12 +384,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         MaxMin_Info->ptMaxTrackSize.y = 720;
 
         return 0;
-
     case WM_PAINT:
     {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
         // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+
         HBRUSH nbrush, obrush;
         HPEN open, npen;
         RECT temp_rect = { 0,0,0,0 };
@@ -503,55 +418,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         GetClientRect(hWnd, &temp_rect);
         MoveToEx(hdc, 0, BOUNDARY, NULL);
         LineTo(hdc, temp_rect.right, BOUNDARY);
-
+        /*
         // 색상 버튼 그리기
-        for (int i = 1; i < btns.size(); i++)
+        for (int i = 0; i < btns.size(); i++)
         {
             Rectangle(hdc, btns[i].rect.left - 1, btns[i].rect.top - 1, btns[i].rect.right + 1, btns[i].rect.bottom + 1);
             SelectObject(hdc, btns[i].brsh);
             Rectangle(hdc, btns[i].rect.left, btns[i].rect.top, btns[i].rect.right, btns[i].rect.bottom);
         }
+        */
+        mypal->print(hdc);
 
         if (!is_replay)     // 현재 리플레이 되고 있는 상황이 아니라면
-        {
-            // 사용자가 입력한 그림을 다시 그림
-            for (int i = 0; i < g_Pinfo.size(); i++)
-            {
-                switch (g_Pinfo[i].state)
-                {
-                case WM_LBUTTONDOWN:
-                    //MessageBox(hWnd, L"실행", L"L버튼", MB_OK);
-                    DeleteObject(npen);
-                    npen = CreatePen(PS_SOLID, g_Pinfo[i].cWidth, g_Pinfo[i].color);
-                    SelectObject(hdc, npen);
-
-                    x = LOWORD(g_Pinfo[i].lparm);
-                    y = HIWORD(g_Pinfo[i].lparm);
-
-                    MoveToEx(hdc, x, y, NULL);
-                    LineTo(hdc, x + 1, y + 1);  //점찍기
-                    break;
-
-                case WM_MOUSEMOVE:
-                case WM_LBUTTONUP:
-
-                    LineTo(hdc, LOWORD(g_Pinfo[i].lparm), HIWORD(g_Pinfo[i].lparm));
-                    break;
-
-                default:
-                    break;
-                }
-            }
-        }
+            draw_vector(hWnd, hdc, g_Pinfo);    // 사용자가 입력한 그림을 다시 그림
+            
 
         EndPaint(hWnd, &ps);
     }
     break;
     case WM_DESTROY:
-        DestroyWindow(g_button_replay);
-        DestroyWindow(g_button_clear);
-        DestroyWindow(g_button_minus);
-        DestroyWindow(g_button_plus);
+        //DestroyWindow(g_button_replay);
+        //DestroyWindow(g_button_clear);
+        //DestroyWindow(g_button_minus);
+        //DestroyWindow(g_button_plus);
 
         // 색상 버튼 소멸
         for (int i = 0; i < BTNS; i++)
@@ -610,6 +499,7 @@ DWORD WINAPI drawing(LPVOID points)
         InvalidateRect(g_hWnd, NULL, TRUE);
         for (int i = 0; i < g_Pinfo.size() - 1; i++)
         {
+            if (g_Pinfo.size() == 0) break;
             switch (g_Pinfo[i].state)
             {
             case WM_LBUTTONDOWN:

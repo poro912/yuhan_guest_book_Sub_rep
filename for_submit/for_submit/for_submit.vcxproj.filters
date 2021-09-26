@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\moudle">
+      <UniqueIdentifier>{50e0fe1b-e0bf-46c9-a40c-64193e66597e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\moudle">
+      <UniqueIdentifier>{bf458ea2-2a1f-41c1-88af-093ab36ab59f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -27,10 +33,37 @@
     <ClInclude Include="for_submit.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="GB_moudles\GB_moudles.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GB_moudles\GB_Palette.h">
+      <Filter>헤더 파일\moudle</Filter>
+    </ClInclude>
+    <ClInclude Include="GB_moudles\GB_Button.h">
+      <Filter>헤더 파일\moudle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="for_submit.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GB_moudles\GB_Mouse.cpp">
+      <Filter>소스 파일\moudle</Filter>
+    </ClCompile>
+    <ClCompile Include="GB_moudles\GB_Keyboard.cpp">
+      <Filter>소스 파일\moudle</Filter>
+    </ClCompile>
+    <ClCompile Include="GB_moudles\GB_Graphics.cpp">
+      <Filter>소스 파일\moudle</Filter>
+    </ClCompile>
+    <ClCompile Include="GB_moudles\GB_File_io.cpp">
+      <Filter>소스 파일\moudle</Filter>
+    </ClCompile>
+    <ClCompile Include="GB_moudles\GB_Button.cpp">
+      <Filter>소스 파일\moudle</Filter>
+    </ClCompile>
+    <ClCompile Include="GB_moudles\GB_Palette.cpp">
+      <Filter>소스 파일\moudle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
