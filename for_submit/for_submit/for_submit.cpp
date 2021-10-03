@@ -210,7 +210,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
-
     case WM_CREATE:
         g_hWnd = hWnd;
         // 팔레트 생성
@@ -331,6 +330,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 p_width = 1;
             InvalidateRect(hWnd, NULL, TRUE);
             break;
+        case 'S':
+            //wchar_t file_name[] = L"201807042.txt";
+            MessageBox(hWnd, L"S버튼 눌림", L"저장", MB_OK);
+            if (file_save(g_Pinfo, L"../2018.txt"))
+            {
+                MessageBox(hWnd, L"저장 완료", L"저장", MB_OK);
+                g_Pinfo.clear();
+                InvalidateRect(hWnd, NULL, TRUE);
+            }
+            else
+                MessageBox(hWnd, L"저장 실패", L"저장", MB_OK);
+            break;
+        case 'L':
+            if(file_load(g_Pinfo, L"../2018.txt"))
+                MessageBox(hWnd, L"로딩 성공", L"로딩", MB_OK);
+            else
+                MessageBox(hWnd, L"로딩 실패", L"로딩", MB_OK);
+            InvalidateRect(hWnd, NULL, TRUE);
+            break;
+
         default:
             break;
         }
