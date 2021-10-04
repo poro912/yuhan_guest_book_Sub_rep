@@ -122,8 +122,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 //
 
-#define BOUNDARY 100    // 마우스 인식 지점 
+#define BOUNDARY 100    // 마우스 인식 지점
 
+//RECT rect_draw = { 50left, 600top, 1225right, 150bottom };
+#define BOUNDARY_top 150
+#define BOUNDARY_left 50
+#define BOUNDARY_right 1225
+#define BOUNDARY_bottom 600
 // ----------함수 선언부-----------
 DWORD WINAPI drawing(LPVOID points);    // 리플레이 스레드
 bool is_area(LPARAM lParam);            // 색칠 가능 영역인지 반환해주는 함수
@@ -157,6 +162,8 @@ RECT pen_rect = { SIZE_BTN_x + SIZE_BTN_gap * 3 + SIZE_BTN_size, \
                 SIZE_BTN_width + SIZE_BTN_x + SIZE_BTN_gap * 3 + SIZE_BTN_size ,\
                 SIZE_BTN_y + SIZE_BTN_hight };
 
+HFONT CreatFontIndirect(CONST LOGFONT* lplf);  //글자크기 및 폰트종류
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     static std::vector<BTN> btns(BTNS); // BTNS 개의 버튼 정보저장
@@ -175,6 +182,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     LPMINMAXINFO MaxMin_Info; //윈도우 크기 구조체
     int x, y;
     Button Btn;
+    //글자크기 및 폰트
+    HFONT hFont, OldFont;
 
     switch (message)
     {
@@ -190,6 +199,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         Btn.PlusButton(hWnd, hInst);
         Btn.MinusButton(hWnd, hInst);
         Btn.EarserButton(hWnd, hInst);
+
 
         break;
 
@@ -296,6 +306,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             col = ret;
         }
             
+       
 
         // 바운더리 영역 밖이면 종료
         if (!is_area(lParam))   
@@ -393,6 +404,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         HBRUSH nbrush, obrush;
         HPEN open, npen;
         RECT temp_rect = { 0,0,0,0 };
+       
         WCHAR wc_pen_size[2];   // 펜 크기를 문자열로 저장할 배열
 
         // 펜 정보 출력
@@ -418,6 +430,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         GetClientRect(hWnd, &temp_rect);
         MoveToEx(hdc, 0, BOUNDARY, NULL);
         LineTo(hdc, temp_rect.right, BOUNDARY);
+
+        //글자크기 및 글자폰트
+        hFont = CreateFont(35,0,0,0,0,0,0,0, HANGEUL_CHARSET,
+                           0, 0, 0, VARIABLE_PITCH | FF_ROMAN,
+                           TEXT("굴림"));
+        OldFont = (HFONT)SelectObject(hdc, hFont);
+        TextOut(hdc, 50, 110, L"서명란", lstrlenW(L"서명란"));
+        SelectObject(hdc, OldFont);
+
+        //화면에 그릴 수 있는 공간
+        HPEN myPen = CreatePen(PS_SOLID, 5, RGB(000, 000, 000));
+        HPEN oldPen = (HPEN)SelectObject(hdc, myPen);
+        Rectangle(hdc, BOUNDARY_left, BOUNDARY_top, BOUNDARY_right, BOUNDARY_bottom);//xleft, ybottom, xright, ytop
+       
+        
+       
         /*
         // 색상 버튼 그리기
         for (int i = 0; i < btns.size(); i++)
@@ -536,10 +564,20 @@ DWORD WINAPI drawing(LPVOID points)
     return 0;
 }
 
-// 색칠 가능 영역인지 반환해주는 함수
+
 bool is_area(LPARAM lParam)
 {
-    if (HIWORD(lParam) > BOUNDARY)   // y좌표가 색칠 가능 영역이라면 
+    do
+    {
+        if (LOWORD(lParam) < BOUNDARY_left + 5)     // left가 범위 밖이면 break
+            break;
+        if (HIWORD(lParam) < BOUNDARY_top + 5)    // top가 범위 밖이면 break
+            break;
+        if (BOUNDARY_right -5 < LOWORD(lParam))    // right가 범위 밖이면 break
+            break;
+        if (BOUNDARY_bottom -5 < HIWORD(lParam))    // bottom가 범위 밖이면 break
+            break;
         return true;
-    return false;
+    } while (1);
+        return false;     
 }
