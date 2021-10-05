@@ -130,18 +130,6 @@ bool is_area(LPARAM lParam);            // 색칠 가능 영역인지 반환해�
 
 // -----구조체, 클래스 선언부------
 
-/*
-typedef struct point_info
-{
-    LPARAM lparm;   //좌표  
-    int cWidth;     //굵기
-    COLORREF color;     //색상
-    DWORD ctime;   //시간
-    UINT state;     //상태{WM_LBUTTONDOWN, }
-}PINFO;
-*/
-
-
 
 
 // --------전역 변수 선언부---------
@@ -152,16 +140,24 @@ bool is_replay = false;         // 현재 리플레이 상태인지 확인
 
 // 펜 크기를 보여주는 사각형 영역의 설정
 // left, top, right, bottom
-RECT pen_rect = { SIZE_BTN_x + SIZE_BTN_gap * 3 + SIZE_BTN_size, \
-                SIZE_BTN_y + SIZE_BTN_top_width, \
-                SIZE_BTN_width + SIZE_BTN_x + SIZE_BTN_gap * 3 + SIZE_BTN_size ,\
+RECT pen_rect = { 
+                SIZE_BTN_x + SIZE_BTN_gap * 3 + SIZE_BTN_size, 
+                SIZE_BTN_y + SIZE_BTN_top_width, 
+                SIZE_BTN_width + SIZE_BTN_x + SIZE_BTN_gap * 3 + SIZE_BTN_size ,
                 SIZE_BTN_y + SIZE_BTN_hight };
+RECT pen_text_rect = { 
+                330, 
+                30,
+                380 ,
+                150 };
+//330, y - 7
+
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     static std::vector<BTN> btns(BTNS); // BTNS 개의 버튼 정보저장
     static int pre_x, pre_y;    // 이전 x,y 좌표 저장
-    static int col = 1;         // 현재 색상 정보 저장
+    static COLORREF col = cols[0];         // 현재 색상 정보 저장
     static int p_width = 10;    // 굵기
     static bool left = false;   // 왼쪽 버튼 클릭 확인
     static DWORD drow_time;     // 최근 그려진 시간이 언제인가
@@ -223,7 +219,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 p_width += 3;
             else
                 p_width = 50;
-            InvalidateRect(hWnd, NULL, TRUE);
+            InvalidateRect(hWnd, &pen_rect, TRUE);
+            InvalidateRect(hWnd, &pen_text_rect, TRUE);    // pen_size_text_area
             break;
         case MINUS:     // - 버튼 클릭시
             if (p_width > 10)
@@ -232,10 +229,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 p_width -= 1;
             else
                 p_width = 1;
-            InvalidateRect(hWnd, NULL, TRUE);
+            InvalidateRect(hWnd, &pen_rect, TRUE);
+            InvalidateRect(hWnd, &pen_text_rect, TRUE);    // pen_size_text_area
             break;
         case ERASER:    //지우개 버튼 클릭시
-            col = 2;
+            //col = 2;
+
+            // 랜덤 버튼
+            mypal->ChangeRand();
+            InvalidateRect(hWnd, &mypal->btn_ran.rect, false);
+
+            // 펜 색상 변경 및 적용
+            col = mypal->btn_ran.col;
+            InvalidateRect(hWnd, &pen_rect, false);
+
+            //파일 출력
+            /*
+            file_save(g_Pinfo, L"../201807042.txt");
+            g_Pinfo.clear();
+            */
+            //파일 입력
+            /*
+            file_load(g_Pinfo, L"../201807042.txt");
+            InvalidateRect(hWnd, NULL, false);
+            */
             break;
         case IDM_ABOUT:
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
@@ -279,7 +296,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_LBUTTONDOWN:
-        int ret;
+        COLORREF ret;
         x = LOWORD(lParam);
         y = HIWORD(lParam);
 
@@ -306,7 +323,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         // 현재 정보 벡터에 저장
         temp_pinfo.lparm = lParam;
         temp_pinfo.state = WM_LBUTTONDOWN;
-        temp_pinfo.color = cols[col];
+        temp_pinfo.color = col;
         temp_pinfo.cWidth = p_width;
         temp_pinfo.ctime = GetTickCount64();
         g_Pinfo.push_back(temp_pinfo);
@@ -336,7 +353,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // 현재 정보 벡터에 저장
             temp_pinfo.lparm = lParam;
             temp_pinfo.state = WM_MOUSEMOVE;
-            temp_pinfo.color = cols[col];
+            temp_pinfo.color = col;
             temp_pinfo.cWidth = p_width;
             temp_pinfo.ctime = GetTickCount64();
             g_Pinfo.push_back(temp_pinfo);
@@ -345,7 +362,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             y = HIWORD(lParam);
 
             hdc = GetDC(hWnd);
-            npen = CreatePen(PS_SOLID, p_width, cols[col]);
+            npen = CreatePen(PS_SOLID, p_width, col);
 
             open = (HPEN)SelectObject(hdc, npen);
             MoveToEx(hdc, pre_x, pre_y, NULL);
@@ -367,7 +384,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 // 현재 정보 벡터에 저장
                 temp_pinfo.lparm = lParam;
                 temp_pinfo.state = WM_LBUTTONUP;
-                temp_pinfo.color = cols[col];
+                temp_pinfo.color = col;
                 temp_pinfo.cWidth = p_width;
                 temp_pinfo.ctime = GetTickCount64();
                 g_Pinfo.push_back(temp_pinfo);
@@ -403,7 +420,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         TextOut(hdc, 330, y - 7, wc_pen_size, 2);   // 펜 크기 숫자로 출력
 
         Rectangle(hdc, pen_rect.left, pen_rect.top, pen_rect.right, pen_rect.bottom);   // 펜 사각형 출력
-        npen = CreatePen(PS_SOLID, p_width, cols[col]);     // 현재 펜 색상으로 변경
+        npen = CreatePen(PS_SOLID, p_width, col);     // 현재 펜 색상으로 변경
         open = (HPEN)SelectObject(hdc, npen);
         DeleteObject(open);
 
@@ -418,16 +435,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         GetClientRect(hWnd, &temp_rect);
         MoveToEx(hdc, 0, BOUNDARY, NULL);
         LineTo(hdc, temp_rect.right, BOUNDARY);
-        /*
-        // 색상 버튼 그리기
-        for (int i = 0; i < btns.size(); i++)
-        {
-            Rectangle(hdc, btns[i].rect.left - 1, btns[i].rect.top - 1, btns[i].rect.right + 1, btns[i].rect.bottom + 1);
-            SelectObject(hdc, btns[i].brsh);
-            Rectangle(hdc, btns[i].rect.left, btns[i].rect.top, btns[i].rect.right, btns[i].rect.bottom);
-        }
-        */
-        mypal->print(hdc);
+        
+        mypal->print(hWnd,hdc);
 
         if (!is_replay)     // 현재 리플레이 되고 있는 상황이 아니라면
             draw_vector(hWnd, hdc, g_Pinfo);    // 사용자가 입력한 그림을 다시 그림

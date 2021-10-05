@@ -42,6 +42,9 @@
     <ClInclude Include="GB_moudles\GB_Button.h">
       <Filter>헤더 파일\moudle</Filter>
     </ClInclude>
+    <ClInclude Include="GB_moudles\GB_File_io.h">
+      <Filter>헤더 파일\moudle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="for_submit.cpp">

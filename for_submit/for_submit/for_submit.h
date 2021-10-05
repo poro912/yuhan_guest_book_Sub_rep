@@ -17,7 +17,7 @@ typedef struct point_info
     UINT            state;      //상태{WM_LBUTTONDOWN }
 }PINFO;
 
-static COLORREF cols[] = { RGB(255,0 ,255), //표시되지 않는 색(검정색 앞부분을 클릭하면 색이 변경되는거로 보아 프로그램상으로 구현은 되어있습니다)
+static COLORREF cols[] = {
                     RGB(0,0,0),         //검정
                     RGB(255,255,255),   //흰색
                     RGB(192,192,192),   //회색
