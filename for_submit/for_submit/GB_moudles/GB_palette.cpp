@@ -5,7 +5,7 @@ Palette::Palette(int x, int y)
 {
     RECT rec;
     srand((unsigned)time(NULL));
-
+    
     this->x = x;
     this->y = y;
     this->pen = CreatePen(PS_SOLID, 2, RGB(192, 192, 192));

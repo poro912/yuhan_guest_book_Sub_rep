@@ -2,7 +2,7 @@
 #include"GB_moudles.h"
 
 // 파레트
-#define BTNS 16        // 색상 버튼 갯수
+#define BTNS (sizeof(cols)/sizeof(COLORREF))        // 색상 버튼 갯수
 #define S_BTN_x 650     // 색상 버튼 시작 x위치
 #define S_BTN_y 30      // 색상 버튼 시작 y위치
 #define BTN_gap 3       // 버튼 간격
