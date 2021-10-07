@@ -75,7 +75,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hInstance = hInstance;
     wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_FORSUBMIT));
     wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground = CreateSolidBrush(RGB(230, 230, 230));  //(HBRUSH)(COLOR_WINDOW + 1);
+    wcex.hbrBackground = CreateSolidBrush(WINDOW_COLOR);  //(HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_FORSUBMIT);
     wcex.lpszClassName = szWindowClass;
     wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -123,6 +123,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 
 #define BOUNDARY 100    // 마우스 인식 지점 
+
+//서명란 범위
+#define BOUNDARY_top 150
+#define BOUNDARY_left 50
+#define BOUNDARY_right 1225
+#define BOUNDARY_bottom 600
+
 
 // ----------함수 선언부-----------
 DWORD WINAPI drawing(LPVOID points);    // 리플레이 스레드
@@ -411,36 +418,55 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         HPEN open, npen;
         RECT temp_rect = { 0,0,0,0 };
         WCHAR wc_pen_size[2];   // 펜 크기를 문자열로 저장할 배열
+        HFONT nfont, ofont;   // 글자 크기 및 폰트
 
-        // 펜 정보 출력
+        SetBkColor(hdc, WINDOW_COLOR);  // TextOut의 배경색을 윈도우와 동일하게 변경
+        SetBkMode(hdc, OPAQUE);     // TextOut의 배경을 불투명으로 변경
+                                    // TRANSPARENT 투명, OPAQUE 불투명
+        
+        //서명 영역 표시
+        nbrush = CreateSolidBrush(WINDOW_COLOR);
+        obrush = (HBRUSH)SelectObject(hdc, nbrush);
+        Rectangle(hdc, BOUNDARY_left, BOUNDARY_top, BOUNDARY_right, BOUNDARY_bottom);
+        //글자크기 및 폰트 설정
+        nfont = CreateFont(35, 0, 0, 0, 0, 0, 0, 0, 
+            HANGEUL_CHARSET,0, 0, 0, 
+            VARIABLE_PITCH | FF_ROMAN, TEXT("굴림"));
+        ofont = (HFONT)SelectObject(hdc, nfont);
+        TextOut(hdc, BOUNDARY_left + 15, BOUNDARY_top - 20, L"서명란", lstrlenW(L"서명란"));
+        SelectObject(hdc, ofont);
+        SelectObject(hdc, obrush);
+        DeleteObject(ofont);
+        DeleteObject(obrush);
+
+        // 펜 상태 출력창
         y = pen_rect.top + (pen_rect.bottom - pen_rect.top) / 2; // 펜에 대해 출력할 y를 정함
         // 펜크기를 문자열로 변환
         wc_pen_size[0] = p_width / 10 + '0';    // 10의 자리
         wc_pen_size[1] = p_width % 10 + '0';    // 0의 자리
         TextOut(hdc, 330, y - 7, wc_pen_size, 2);   // 펜 크기 숫자로 출력
-
         Rectangle(hdc, pen_rect.left, pen_rect.top, pen_rect.right, pen_rect.bottom);   // 펜 사각형 출력
         npen = CreatePen(PS_SOLID, p_width, col);     // 현재 펜 색상으로 변경
         open = (HPEN)SelectObject(hdc, npen);
-        DeleteObject(open);
-
         MoveToEx(hdc, pen_rect.left + 20, y, NULL);     // 펜 형태 출력
         LineTo(hdc, pen_rect.right - 20, y);
-
-        npen = CreatePen(PS_SOLID, 1, RGB(195, 195, 195));
-        open = (HPEN)SelectObject(hdc, npen);
-        DeleteObject(open);
+        SelectObject(hdc, open);
+        DeleteObject(npen);
 
         // BOUNDARY 라인 그리기
         GetClientRect(hWnd, &temp_rect);
         MoveToEx(hdc, 0, BOUNDARY, NULL);
         LineTo(hdc, temp_rect.right, BOUNDARY);
         
+        //팔레트 출력
         mypal->print(hWnd,hdc);
 
         if (!is_replay)     // 현재 리플레이 되고 있는 상황이 아니라면
             draw_vector(hWnd, hdc, g_Pinfo);    // 사용자가 입력한 그림을 다시 그림
-            
+
+        DeleteObject(nbrush);
+        DeleteObject(npen);
+        DeleteObject(nfont);
 
         EndPaint(hWnd, &ps);
     }
@@ -548,7 +574,17 @@ DWORD WINAPI drawing(LPVOID points)
 // 색칠 가능 영역인지 반환해주는 함수
 bool is_area(LPARAM lParam)
 {
-    if (HIWORD(lParam) > BOUNDARY)   // y좌표가 색칠 가능 영역이라면 
+    do
+    {
+        if (LOWORD(lParam) < BOUNDARY_left + 3)     // left가 범위 밖이면 break
+            break;
+        if (BOUNDARY_right - 3 < LOWORD(lParam))    // right가 범위 밖이면 break
+            break;
+        if (HIWORD(lParam) < BOUNDARY_top + 3)    // top가 범위 밖이면 break
+            break;
+        if (BOUNDARY_bottom - 3 < HIWORD(lParam))    // bottom가 범위 밖이면 break
+            break;
         return true;
+    } while (1);
     return false;
 }

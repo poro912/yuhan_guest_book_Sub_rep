@@ -7,6 +7,7 @@
 #include "resource.h"
 #include "framework.h"
 
+#define WINDOW_COLOR RGB(230,230,230)
 
 typedef struct point_info
 {
