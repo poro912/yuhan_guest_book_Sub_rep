@@ -4,11 +4,14 @@
 #include<vector>
 
 //---------------GB_Button--------------------
-//---------------GB_File_io--------------------
+#include "GB_Button.h"
 
+//---------------GB_File_io--------------------
+#include "GB_File_io.h"
 
 
 //---------------GB_Graphics--------------------
+
 // 벡터의 내용을 그대로 출력한다.
 void draw_vector(
     HWND                hWnd,
@@ -17,7 +20,9 @@ void draw_vector(
 );
 //---------------GB_Keyboard--------------------
 
+
 //---------------GB_Mouse--------------------
 
-//---------------GB_Graphics--------------------
+
+//---------------GB_Palatte--------------------
 #include "GB_Palette.h"

@@ -75,7 +75,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hInstance = hInstance;
     wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_FORSUBMIT));
     wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcex.hbrBackground = CreateSolidBrush(WINDOW_COLOR);  //(HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_FORSUBMIT);
     wcex.lpszClassName = szWindowClass;
     wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -122,34 +122,14 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 //
 
-
-
-#define REPLAY 1500     // REPLAY 버튼 번호
-#define CLEAR 1501      // CLEAR 버튼 번호
-#define COMM_BTN_x 30       //command button
-#define COMM_BTN_y 33       //
-#define COMM_BTN_width 100  //
-#define COMM_BTN_hight 30   //
-#define COMM_BTN_gap 10     //
-
-#define PLUS 2000       // PLUS 버튼 번호
-#define MINUS 2001      // MINUS 버튼 번호
-#define SIZE_BTN_x 290  //command button
-#define SIZE_BTN_y 33   // 
-#define SIZE_BTN_size 30    //
-#define SIZE_BTN_gap 30     //
-#define SIZE_BTN_top_width -10
-#define SIZE_BTN_width 150  //
-#define SIZE_BTN_hight 35   //
-
-#define ERASER 2500     // REPLAY 버튼 번호
-#define ERASER_BTN_x 580       //command button
-#define ERASER_BTN_y 30       //
-#define ERASER_BTN_width 80   //
-#define ERASER_BTN_hight 30   //
-#define ERASER_BTN_gap 10     //
-
 #define BOUNDARY 100    // 마우스 인식 지점 
+
+//서명란 범위
+#define BOUNDARY_top 150
+#define BOUNDARY_left 50
+#define BOUNDARY_right 1225
+#define BOUNDARY_bottom 600
+
 
 // ----------함수 선언부-----------
 DWORD WINAPI drawing(LPVOID points);    // 리플레이 스레드
@@ -157,65 +137,56 @@ bool is_area(LPARAM lParam);            // 색칠 가능 영역인지 반환해�
 
 // -----구조체, 클래스 선언부------
 
-/*
-typedef struct point_info
-{
-    LPARAM lparm;   //좌표  
-    int cWidth;     //굵기
-    COLORREF color;     //색상
-    DWORD ctime;   //시간
-    UINT state;     //상태{WM_LBUTTONDOWN, }
-}PINFO;
-*/
-
-
 
 
 // --------전역 변수 선언부---------
 HWND g_hWnd;
-HWND g_button_replay = nullptr; // 버튼에 대한 포인터를 저장
-HWND g_button_clear = nullptr;
-HWND g_button_plus = nullptr;
-HWND g_button_minus = nullptr;
-HWND g_button_eraser = nullptr;
-
 
 std::vector <PINFO> g_Pinfo;    // 선 정보 저장 벡터
 bool is_replay = false;         // 현재 리플레이 상태인지 확인
 
 // 펜 크기를 보여주는 사각형 영역의 설정
 // left, top, right, bottom
-RECT pen_rect = { SIZE_BTN_x + SIZE_BTN_gap * 3 + SIZE_BTN_size, \
-                SIZE_BTN_y + SIZE_BTN_top_width, \
-                SIZE_BTN_width + SIZE_BTN_x + SIZE_BTN_gap * 3 + SIZE_BTN_size ,\
+RECT pen_rect = { 
+                SIZE_BTN_x + SIZE_BTN_gap * 3 + SIZE_BTN_size, 
+                SIZE_BTN_y + SIZE_BTN_top_width, 
+                SIZE_BTN_width + SIZE_BTN_x + SIZE_BTN_gap * 3 + SIZE_BTN_size ,
                 SIZE_BTN_y + SIZE_BTN_hight };
+RECT pen_text_rect = { 
+                330, 
+                30,
+                380 ,
+                150 };
+//330, y - 7
+
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     static std::vector<BTN> btns(BTNS); // BTNS 개의 버튼 정보저장
     static int pre_x, pre_y;    // 이전 x,y 좌표 저장
-    static int col = 1;         // 현재 색상 정보 저장
+    static COLORREF col = cols[0];         // 현재 색상 정보 저장
     static int p_width = 10;    // 굵기
     static bool left = false;   // 왼쪽 버튼 클릭 확인
     static DWORD drow_time;     // 최근 그려진 시간이 언제인가
     static HANDLE thread = nullptr; // 쓰레드 저장
     static Palette* mypal;
+    //static void g_button_replay;
     HDC hdc;
     PINFO temp_pinfo;
     POINT po;
     DWORD g_time;
     LPMINMAXINFO MaxMin_Info; //윈도우 크기 구조체
     int x, y;
-
+    Button Btn;
 
     switch (message)
     {
-
     case WM_CREATE:
         g_hWnd = hWnd;
         // 팔레트 생성
         mypal = new Palette(680, 30);
 
+<<<<<<< HEAD
         // CLEAR REPLAY 버튼 생성
         g_button_replay = CreateWindow(L"button", L"REPLAY", WS_CHILD | WS_VISIBLE, \
             COMM_BTN_x, COMM_BTN_y, COMM_BTN_width, COMM_BTN_hight, \
@@ -236,6 +207,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         g_button_eraser = CreateWindow(L"button", L"랜덤", WS_CHILD | WS_VISIBLE, \
             ERASER_BTN_x, ERASER_BTN_y, ERASER_BTN_width, ERASER_BTN_hight, \
             hWnd, (HMENU)ERASER, hInst, NULL);
+=======
+        // 버튼 생성
+
+        Btn.ReplayButton(hWnd,hInst);
+        Btn.ClearButton(hWnd, hInst);
+        Btn.PlusButton(hWnd, hInst);
+        Btn.MinusButton(hWnd, hInst);
+        Btn.EarserButton(hWnd, hInst);
+
+>>>>>>> e3ff4fa29a8c6f8e3713f2efa5a29491aa1385e9
         break;
 
     case WM_COMMAND:
@@ -268,7 +249,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 p_width += 3;
             else
                 p_width = 50;
-            InvalidateRect(hWnd, NULL, TRUE);
+            InvalidateRect(hWnd, &pen_rect, TRUE);
+            InvalidateRect(hWnd, &pen_text_rect, TRUE);    // pen_size_text_area
             break;
         case MINUS:     // - 버튼 클릭시
             if (p_width > 10)
@@ -277,12 +259,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 p_width -= 1;
             else
                 p_width = 1;
-            InvalidateRect(hWnd, NULL, TRUE);
+            InvalidateRect(hWnd, &pen_rect, TRUE);
+            InvalidateRect(hWnd, &pen_text_rect, TRUE);    // pen_size_text_area
             break;
         case ERASER:    //지우개 버튼 클릭시
+<<<<<<< HEAD
             mypal->ChangeRand();
 
 
+=======
+            //col = 2;
+
+            // 랜덤 버튼
+            mypal->ChangeRand();
+            InvalidateRect(hWnd, &mypal->btn_ran.rect, false);
+
+            // 펜 색상 변경 및 적용
+            col = mypal->btn_ran.col;
+            InvalidateRect(hWnd, &pen_rect, false);
+
+            //파일 출력
+            /*
+            file_save(g_Pinfo, L"../201807042.txt");
+            g_Pinfo.clear();
+            */
+            //파일 입력
+            /*
+            file_load(g_Pinfo, L"../201807042.txt");
+            InvalidateRect(hWnd, NULL, false);
+            */
+>>>>>>> e3ff4fa29a8c6f8e3713f2efa5a29491aa1385e9
             break;
         case IDM_ABOUT:
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
@@ -326,7 +332,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_LBUTTONDOWN:
-        int ret;
+        COLORREF ret;
         x = LOWORD(lParam);
         y = HIWORD(lParam);
 
@@ -353,7 +359,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         // 현재 정보 벡터에 저장
         temp_pinfo.lparm = lParam;
         temp_pinfo.state = WM_LBUTTONDOWN;
-        temp_pinfo.color = cols[col];
+        temp_pinfo.color = col;
         temp_pinfo.cWidth = p_width;
         temp_pinfo.ctime = GetTickCount64();
         g_Pinfo.push_back(temp_pinfo);
@@ -383,7 +389,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // 현재 정보 벡터에 저장
             temp_pinfo.lparm = lParam;
             temp_pinfo.state = WM_MOUSEMOVE;
-            temp_pinfo.color = cols[col];
+            temp_pinfo.color = col;
             temp_pinfo.cWidth = p_width;
             temp_pinfo.ctime = GetTickCount64();
             g_Pinfo.push_back(temp_pinfo);
@@ -392,7 +398,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             y = HIWORD(lParam);
 
             hdc = GetDC(hWnd);
-            npen = CreatePen(PS_SOLID, p_width, cols[col]);
+            npen = CreatePen(PS_SOLID, p_width, col);
 
             open = (HPEN)SelectObject(hdc, npen);
             MoveToEx(hdc, pre_x, pre_y, NULL);
@@ -414,7 +420,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 // 현재 정보 벡터에 저장
                 temp_pinfo.lparm = lParam;
                 temp_pinfo.state = WM_LBUTTONUP;
-                temp_pinfo.color = cols[col];
+                temp_pinfo.color = col;
                 temp_pinfo.cWidth = p_width;
                 temp_pinfo.ctime = GetTickCount64();
                 g_Pinfo.push_back(temp_pinfo);
@@ -431,7 +437,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         MaxMin_Info->ptMaxTrackSize.y = 720;
 
         return 0;
-
     case WM_PAINT:
     {
         PAINTSTRUCT ps;
@@ -442,53 +447,64 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         HPEN open, npen;
         RECT temp_rect = { 0,0,0,0 };
         WCHAR wc_pen_size[2];   // 펜 크기를 문자열로 저장할 배열
+        HFONT nfont, ofont;   // 글자 크기 및 폰트
 
-        // 펜 정보 출력
+        SetBkColor(hdc, WINDOW_COLOR);  // TextOut의 배경색을 윈도우와 동일하게 변경
+        SetBkMode(hdc, OPAQUE);     // TextOut의 배경을 불투명으로 변경
+                                    // TRANSPARENT 투명, OPAQUE 불투명
+        
+        //서명 영역 표시
+        nbrush = CreateSolidBrush(WINDOW_COLOR);
+        obrush = (HBRUSH)SelectObject(hdc, nbrush);
+        Rectangle(hdc, BOUNDARY_left, BOUNDARY_top, BOUNDARY_right, BOUNDARY_bottom);
+        //글자크기 및 폰트 설정
+        nfont = CreateFont(35, 0, 0, 0, 0, 0, 0, 0, 
+            HANGEUL_CHARSET,0, 0, 0, 
+            VARIABLE_PITCH | FF_ROMAN, TEXT("굴림"));
+        ofont = (HFONT)SelectObject(hdc, nfont);
+        TextOut(hdc, BOUNDARY_left + 15, BOUNDARY_top - 20, L"서명란", lstrlenW(L"서명란"));
+        SelectObject(hdc, ofont);
+        SelectObject(hdc, obrush);
+        DeleteObject(ofont);
+        DeleteObject(obrush);
+
+        // 펜 상태 출력창
         y = pen_rect.top + (pen_rect.bottom - pen_rect.top) / 2; // 펜에 대해 출력할 y를 정함
         // 펜크기를 문자열로 변환
         wc_pen_size[0] = p_width / 10 + '0';    // 10의 자리
         wc_pen_size[1] = p_width % 10 + '0';    // 0의 자리
         TextOut(hdc, 330, y - 7, wc_pen_size, 2);   // 펜 크기 숫자로 출력
-
         Rectangle(hdc, pen_rect.left, pen_rect.top, pen_rect.right, pen_rect.bottom);   // 펜 사각형 출력
-        npen = CreatePen(PS_SOLID, p_width, cols[col]);     // 현재 펜 색상으로 변경
+        npen = CreatePen(PS_SOLID, p_width, col);     // 현재 펜 색상으로 변경
         open = (HPEN)SelectObject(hdc, npen);
-        DeleteObject(open);
-
         MoveToEx(hdc, pen_rect.left + 20, y, NULL);     // 펜 형태 출력
         LineTo(hdc, pen_rect.right - 20, y);
-
-        npen = CreatePen(PS_SOLID, 1, RGB(195, 195, 195));
-        open = (HPEN)SelectObject(hdc, npen);
-        DeleteObject(open);
+        SelectObject(hdc, open);
+        DeleteObject(npen);
 
         // BOUNDARY 라인 그리기
         GetClientRect(hWnd, &temp_rect);
         MoveToEx(hdc, 0, BOUNDARY, NULL);
         LineTo(hdc, temp_rect.right, BOUNDARY);
-        /*
-        // 색상 버튼 그리기
-        for (int i = 0; i < btns.size(); i++)
-        {
-            Rectangle(hdc, btns[i].rect.left - 1, btns[i].rect.top - 1, btns[i].rect.right + 1, btns[i].rect.bottom + 1);
-            SelectObject(hdc, btns[i].brsh);
-            Rectangle(hdc, btns[i].rect.left, btns[i].rect.top, btns[i].rect.right, btns[i].rect.bottom);
-        }
-        */
-        mypal->print(hdc);
+        
+        //팔레트 출력
+        mypal->print(hWnd,hdc);
 
         if (!is_replay)     // 현재 리플레이 되고 있는 상황이 아니라면
             draw_vector(hWnd, hdc, g_Pinfo);    // 사용자가 입력한 그림을 다시 그림
-            
+
+        DeleteObject(nbrush);
+        DeleteObject(npen);
+        DeleteObject(nfont);
 
         EndPaint(hWnd, &ps);
     }
     break;
     case WM_DESTROY:
-        DestroyWindow(g_button_replay);
-        DestroyWindow(g_button_clear);
-        DestroyWindow(g_button_minus);
-        DestroyWindow(g_button_plus);
+        //DestroyWindow(g_button_replay);
+        //DestroyWindow(g_button_clear);
+        //DestroyWindow(g_button_minus);
+        //DestroyWindow(g_button_plus);
 
         // 색상 버튼 소멸
         for (int i = 0; i < BTNS; i++)
@@ -547,6 +563,7 @@ DWORD WINAPI drawing(LPVOID points)
         InvalidateRect(g_hWnd, NULL, TRUE);
         for (int i = 0; i < g_Pinfo.size() - 1; i++)
         {
+            if (g_Pinfo.size() == 0) break;
             switch (g_Pinfo[i].state)
             {
             case WM_LBUTTONDOWN:
@@ -586,7 +603,17 @@ DWORD WINAPI drawing(LPVOID points)
 // 색칠 가능 영역인지 반환해주는 함수
 bool is_area(LPARAM lParam)
 {
-    if (HIWORD(lParam) > BOUNDARY)   // y좌표가 색칠 가능 영역이라면 
+    do
+    {
+        if (LOWORD(lParam) < BOUNDARY_left + 3)     // left가 범위 밖이면 break
+            break;
+        if (BOUNDARY_right - 3 < LOWORD(lParam))    // right가 범위 밖이면 break
+            break;
+        if (HIWORD(lParam) < BOUNDARY_top + 3)    // top가 범위 밖이면 break
+            break;
+        if (BOUNDARY_bottom - 3 < HIWORD(lParam))    // bottom가 범위 밖이면 break
+            break;
         return true;
+    } while (1);
     return false;
 }
