@@ -37,7 +37,7 @@ void Button::MinusButton(HWND hWnd, HINSTANCE hInst)
 // 지우개 버튼 생성
 void Button::EarserButton(HWND hWnd, HINSTANCE hInst)
 {
-    g_button_eraser = CreateWindow(L"button", L"지우개", WS_CHILD | WS_VISIBLE, \
+    g_button_eraser = CreateWindow(L"button", L"랜덤", WS_CHILD | WS_VISIBLE, \
         ERASER_BTN_x, ERASER_BTN_y, ERASER_BTN_width, ERASER_BTN_hight, \
         hWnd, (HMENU)ERASER, hInst, NULL);
 }

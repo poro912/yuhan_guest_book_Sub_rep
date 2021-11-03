@@ -9,6 +9,19 @@
 
 #define WINDOW_COLOR RGB(230,230,230)
 
+#define SAVE_MENU ID_32771
+#define LOAD_MENU ID_32772
+
+//서명란 범위
+#define BOUNDARY_TOP 120
+#define BOUNDARY_LEFT 50
+#define BOUNDARY_RIGHT 1225
+#define BOUNDARY_BOTTOM 600
+
+// 앞으로 바뀔 수 있는 값들
+#define FILE_PATH L"../../data"
+
+
 typedef struct point_info
 {
     LPARAM          lparm;      //좌표  

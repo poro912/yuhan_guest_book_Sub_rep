@@ -124,11 +124,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 #define BOUNDARY 100    // 마우스 인식 지점 
 
-//서명란 범위
-#define BOUNDARY_top 150
-#define BOUNDARY_left 50
-#define BOUNDARY_right 1225
-#define BOUNDARY_bottom 600
+
 
 
 // ----------함수 선언부-----------
@@ -249,23 +245,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // 펜 색상 변경 및 적용
             col = mypal->btn_ran.col;
             InvalidateRect(hWnd, &pen_rect, false);
-
-            //파일 출력
-            /*
-            file_save(g_Pinfo, L"../201807042.txt");
-            g_Pinfo.clear();
-            */
-            //파일 입력
-            /*
-            file_load(g_Pinfo, L"../201807042.txt");
-            InvalidateRect(hWnd, NULL, false);
-            */
             break;
+
         case IDM_ABOUT:
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
             break;
         case IDM_EXIT:
             DestroyWindow(hWnd);
+            break;
+
+        case SAVE_MENU:  // 저장버튼
+            if (file_save(g_Pinfo, L"201807042"))
+            {
+                MessageBox(0, L"저장 성공", L"저장", MB_OK);
+            }
+            else
+            {
+                MessageBox(0, L"저장 실패", L"저장", MB_OK);
+            }
+            
+            InvalidateRect(hWnd, NULL, false);
+            break;
+        case LOAD_MENU:  // 불러오기 버튼
+            file_load(g_Pinfo, L"201807042.txt");
+            InvalidateRect(hWnd, NULL, false);
             break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
@@ -417,7 +420,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         HBRUSH nbrush, obrush;
         HPEN open, npen;
         RECT temp_rect = { 0,0,0,0 };
-        WCHAR wc_pen_size[2];   // 펜 크기를 문자열로 저장할 배열
+        WCHAR wc_pen_size[10];   // 펜 크기를 문자열로 저장할 배열
         HFONT nfont, ofont;   // 글자 크기 및 폰트
 
         SetBkColor(hdc, WINDOW_COLOR);  // TextOut의 배경색을 윈도우와 동일하게 변경
@@ -427,13 +430,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         //서명 영역 표시
         nbrush = CreateSolidBrush(WINDOW_COLOR);
         obrush = (HBRUSH)SelectObject(hdc, nbrush);
-        Rectangle(hdc, BOUNDARY_left, BOUNDARY_top, BOUNDARY_right, BOUNDARY_bottom);
+        Rectangle(hdc, BOUNDARY_LEFT, BOUNDARY_TOP, BOUNDARY_RIGHT, BOUNDARY_BOTTOM);
         //글자크기 및 폰트 설정
         nfont = CreateFont(35, 0, 0, 0, 0, 0, 0, 0, 
             HANGEUL_CHARSET,0, 0, 0, 
             VARIABLE_PITCH | FF_ROMAN, TEXT("굴림"));
         ofont = (HFONT)SelectObject(hdc, nfont);
-        TextOut(hdc, BOUNDARY_left + 15, BOUNDARY_top - 20, L"서명란", lstrlenW(L"서명란"));
+        TextOut(hdc, BOUNDARY_LEFT + 15, BOUNDARY_TOP - 20, L"서명란", lstrlenW(L"서명란"));
         SelectObject(hdc, ofont);
         SelectObject(hdc, obrush);
         DeleteObject(ofont);
@@ -442,9 +445,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         // 펜 상태 출력창
         y = pen_rect.top + (pen_rect.bottom - pen_rect.top) / 2; // 펜에 대해 출력할 y를 정함
         // 펜크기를 문자열로 변환
-        wc_pen_size[0] = p_width / 10 + '0';    // 10의 자리
-        wc_pen_size[1] = p_width % 10 + '0';    // 0의 자리
-        TextOut(hdc, 330, y - 7, wc_pen_size, 2);   // 펜 크기 숫자로 출력
+        wsprintfW(wc_pen_size, L"%2d", p_width);
+        TextOut(hdc, SIZE_BTN_x + SIZE_BTN_size + 8, y - 7, wc_pen_size, 2);   // 펜 크기 숫자로 출력
         Rectangle(hdc, pen_rect.left, pen_rect.top, pen_rect.right, pen_rect.bottom);   // 펜 사각형 출력
         npen = CreatePen(PS_SOLID, p_width, col);     // 현재 펜 색상으로 변경
         open = (HPEN)SelectObject(hdc, npen);
@@ -454,9 +456,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         DeleteObject(npen);
 
         // BOUNDARY 라인 그리기
+        /*
         GetClientRect(hWnd, &temp_rect);
         MoveToEx(hdc, 0, BOUNDARY, NULL);
         LineTo(hdc, temp_rect.right, BOUNDARY);
+        */
         
         //팔레트 출력
         mypal->print(hWnd,hdc);
@@ -576,13 +580,13 @@ bool is_area(LPARAM lParam)
 {
     do
     {
-        if (LOWORD(lParam) < BOUNDARY_left + 3)     // left가 범위 밖이면 break
+        if (LOWORD(lParam) < BOUNDARY_LEFT + 3)     // left가 범위 밖이면 break
             break;
-        if (BOUNDARY_right - 3 < LOWORD(lParam))    // right가 범위 밖이면 break
+        if (BOUNDARY_RIGHT - 3 < LOWORD(lParam))    // right가 범위 밖이면 break
             break;
-        if (HIWORD(lParam) < BOUNDARY_top + 3)    // top가 범위 밖이면 break
+        if (HIWORD(lParam) < BOUNDARY_TOP + 3)    // top가 범위 밖이면 break
             break;
-        if (BOUNDARY_bottom - 3 < HIWORD(lParam))    // bottom가 범위 밖이면 break
+        if (BOUNDARY_BOTTOM - 3 < HIWORD(lParam))    // bottom가 범위 밖이면 break
             break;
         return true;
     } while (1);

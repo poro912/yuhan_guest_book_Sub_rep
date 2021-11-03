@@ -6,7 +6,7 @@
 #define S_BTN_x 650     // 색상 버튼 시작 x위치
 #define S_BTN_y 30      // 색상 버튼 시작 y위치
 #define BTN_gap 3       // 버튼 간격
-#define BTN_size 30     // 버튼 크기
+#define BTN_size 35     // 버튼 크기
 
 typedef struct btn      //색상 버튼내용을 저장할 구조체
 {
