@@ -267,7 +267,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             InvalidateRect(hWnd, NULL, false);
             break;
         case LOAD_MENU:  // 불러오기 버튼
-            file_load(g_Pinfo, L"201807042.txt");
+            if (file_load(g_Pinfo, L"201807042"))
+            {
+                MessageBox(0, L"불러오기 성공", L"불러오기", MB_OK);
+            }
+            else
+            {
+                MessageBox(0, L"불러오기 실패", L"불러오기", MB_OK);
+            }
             InvalidateRect(hWnd, NULL, false);
             break;
         default:
